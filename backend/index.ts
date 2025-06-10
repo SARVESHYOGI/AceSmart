@@ -1,19 +1,39 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import connectDB from "./config/db.ts";
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './config/db.ts';
+import cookieParser from 'cookie-parser';
+import authRoute from './routes/authRoute.ts';
+import testRoute from './routes/testRoute.ts';
+import teacherRoute from './routes/teacherRoute.ts';
+import parentRoute from './routes/parentRoute.ts';
+import generateQuestionsRoute from './routes/generateQuestionsRoute.ts';
 
 dotenv.config();
 
+connectDB();
+
 const app = express();
+
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true
+}));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
     res.send("Hello World");
 });
 
-connectDB();
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server is running on  port http://localhost:${process.env.PORT}`);
+app.use("/api/auth", authRoute); 
+app.use("/api/tests", testRoute);
+app.use("/api/teacher/batch", teacherRoute);
+app.use("/api/parent/child", parentRoute);
+app.use("/api/generatequestions", generateQuestionsRoute);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
 });
