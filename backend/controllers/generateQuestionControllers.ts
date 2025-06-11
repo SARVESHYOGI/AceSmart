@@ -1,6 +1,7 @@
 import generate from "../config/aiprompt";
 
 import { Request, Response } from 'express';
+import { Question } from "../models/Question.model";
 
 
 
@@ -126,14 +127,41 @@ export const generateQuestions = async (req: Request, res: Response) => {
         "correctAnswer": "B",
         "explanation": "a×b=|-i+2j-3k|.*Hence,a×b=-i+2j-3k"
     }
-]
+];
+
+        addtoquestioncollection(exam,subject,topic,result);
+
         if (!result || result.length === 0) {
             return res.status(500).json({ message: 'No questions generated.' });
         }
 
-       return res.status(200).json(result); // Assuming result is an array and we return the first question
+       return res.status(200).json(result);
     } catch (error) {
         console.error('Error generating questions:', error);
         return res.status(500).json({ message: 'Internal server error', error: error });
     }   
 }
+
+const addtoquestioncollection = async (
+  exam: string,
+  subject: string,
+  topic: string,
+  questions: any[]
+) => {
+  try {
+    const formattedQuestions = questions.map((q) => ({
+      examType: exam,
+      subject,
+      topic,
+      question: q.question,
+      options: Object.values(q.options),
+      answer: q.correctAnswer,
+      explanation: q.explanation ?? "",
+    }));
+
+    await Question.insertMany(formattedQuestions);
+    console.log("Questions added to the collection:", formattedQuestions);
+  } catch (error) {
+    console.error("Error adding questions to the collection:", error);
+  }
+};
