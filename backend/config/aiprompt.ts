@@ -12,6 +12,8 @@ Each question should have:
 - Exactly 4 answer options labeled A, B, C, and D
 - One correct option (state the correct option letter)
 - A brief explanation for the correct answer
+- give space as '*'
+
 
 Format the output in JSON like this:
 [
@@ -27,15 +29,28 @@ Format the output in JSON like this:
     "explanation": "Explanation for why B is correct"
   }
 ]
+
+ Please structure the response strictly in valid JSON format. 
+Ensure proper JSON syntax, including correct key-value pairs and appropriate use of quotes.
+Do not include extra words like "json starts" or "json ends".
+Do not include any additional text or explanations outside the JSON structure.
+inside value if there is any space then use '*' .
+remove all spaces in the JSON keys and values.
+Do not include any additional text or explanations outside the JSON structure.
+don't include escaped characters in the JSON structure.
 `;
-const response = await ai.models.generateContent({
+const result = await ai.models.generateContent({
     model: "gemini-2.0-flash",
     contents: [prompt],
   });
-  console.log(response.text);
+  console.log(result.text);
+  
+  const generatedText = await result.text;
+    const cleanedText = generatedText?.replace(/```json\n|\n```/g, '');
+    const jsonData = JSON.parse(cleanedText? cleanedText : '[]');
 
 
-  return response;
+  return jsonData;
 };
 
 export default generate;
