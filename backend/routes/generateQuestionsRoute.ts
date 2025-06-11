@@ -1,14 +1,13 @@
 import express,{Router} from 'express';
+import generate from '../config/aiprompt';
+import { generateQuestions } from '../controllers/generateQuestionControllers';
 
 const generateQuestionsRoute = Router();
 
-generateQuestionsRoute.post("/login", (req, res) => {
-    // Handle login
-    res.status(200).send("Login successful");
+generateQuestionsRoute.get('/', (req, res) => {
+    res.send('Generate Questions route is working');
 });
-
-generateQuestionsRoute.post("/register", (req, res) => {
-    // Handle registration
+generateQuestionsRoute.post('/', async (req, res) => {
+    await generateQuestions(req, res);
 });
-
 export default generateQuestionsRoute;

@@ -1,4 +1,9 @@
-const generate = (exam:string, subject:string, topic:string) => {
+import { GoogleGenAI } from "@google/genai";
+const ai = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_GENAI_API_KEY,
+});
+
+const generate = async(exam:string, subject:string, topic:string) => {
   const prompt = `
 Generate a mock test of 10 multiple-choice questions (MCQs) for the ${exam} exam in the subject ${subject}, focused on the topic "${topic}".
 
@@ -23,6 +28,14 @@ Format the output in JSON like this:
   }
 ]
 `;
+const response = await ai.models.generateContent({
+    model: "gemini-2.0-flash",
+    contents: [prompt],
+  });
+  console.log(response.text);
 
-  return prompt;
+
+  return response;
 };
+
+export default generate;
