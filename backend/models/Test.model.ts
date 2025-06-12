@@ -1,6 +1,6 @@
 import { Schema, model, Document, Types } from "mongoose";
 
-interface IAnswer {
+export interface IAnswer {
     questionId: Types.ObjectId;
     selectedOption: string;
     correct: boolean;

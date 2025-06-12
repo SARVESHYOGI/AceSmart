@@ -141,7 +141,6 @@ export const generateQuestions = async (req: Request, res: Response) => {
         return res.status(500).json({ message: 'Internal server error', error: error });
     }   
 }
-
 const addtoquestioncollection = async (
   exam: string,
   subject: string,
@@ -159,9 +158,23 @@ const addtoquestioncollection = async (
       explanation: q.explanation ?? "",
     }));
 
-    await Question.insertMany(formattedQuestions);
-    console.log("Questions added to the collection:", formattedQuestions);
+    for (const formattedQuestion of formattedQuestions) {
+      const existingQuestion = await Question.findOne({
+        examType: formattedQuestion.examType,
+        subject: formattedQuestion.subject,
+        topic: formattedQuestion.topic,
+        question: formattedQuestion.question
+      });
+
+      if (!existingQuestion) {
+        await Question.create(formattedQuestion);
+        console.log(`Inserted unique question: ${formattedQuestion.question}`);
+      } else {
+        console.log(`Skipped duplicate question: ${formattedQuestion.question}`);
+      }
+    }
   } catch (error) {
     console.error("Error adding questions to the collection:", error);
   }
 };
+
