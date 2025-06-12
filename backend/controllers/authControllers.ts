@@ -88,7 +88,7 @@ export const registerRoute = async (req: Request, res: Response): Promise<Respon
 
 export const selfRoute = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user?.id;
 
     const user = await User.findById(userId).select('-password') as IUser;
 
