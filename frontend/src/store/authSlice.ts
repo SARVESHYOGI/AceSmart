@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import {type User } from "../types/User";
-import { getCurrentUser, loginUser } from "../api/auth";
+import { getCurrentUser, loginUser, registerUser } from "../api/auth";
 
 interface AuthState {
   user: User | null;
@@ -8,8 +8,10 @@ interface AuthState {
   error: string | null;
 }
 
+const userFromStorage = localStorage.getItem("user");
+
 const initialState: AuthState = {
-  user: null,
+  user: userFromStorage ? JSON.parse(userFromStorage) : null,
   loading: false,
   error: null,
 };
@@ -22,12 +24,17 @@ export const login = createAsyncThunk("auth/login", async (credentials: { email:
   return await loginUser(credentials.email, credentials.password);
 });
 
+export const register= createAsyncThunk("auth/register", async (credentials: { name: string; email: string; password: string; role: string }) => {
+  return await registerUser(credentials.name, credentials.email, credentials.password, credentials.role);
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logout(state) {
       state.user = null;
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -46,6 +53,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action: PayloadAction<User>) => {
         state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload));
       });
   },
 });

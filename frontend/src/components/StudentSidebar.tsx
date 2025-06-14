@@ -1,67 +1,47 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/Inbox";
-import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import EmailIcon from "@mui/icons-material/Email";
-import NavPath from "./NavPath";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/authSlice";
 
-export default function StudentSidebar() {
-  const [open, setOpen] = React.useState(false);
+const sidebarItems = [
+  { label: "Dashboard", icon: "🏠", path: "/dashboard" },
+  { label: "MockTest", icon: "📚", path: "/mocktest" },
+  { label: "Assignments", icon: "📝", path: "/assignments" },
+  { label: "Grades", icon: "📊", path: "/grades" },
+  { label: "Profile", icon: "👤", path: "/profile" },
+];
+const StudentSidebar: React.FC = () => {
+  const dispatch = useDispatch();
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <EmailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <EmailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-
   return (
-    <div>
-      <div className="flex align-middle items-center">
-        <Button onClick={toggleDrawer(true)}>
-          <MenuOpenIcon />
-        </Button>
-        <NavPath />
+    <aside className="w-[220px] h-screen bg-slate-800 text-white p-6 flex flex-col box-border">
+      <div className="text-2xl font-bold text-center mb-8 tracking-wide">
+        Student Portal
       </div>
-
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
-    </div>
+      <nav>
+        <ul className="list-none p-0 m-0">
+          {sidebarItems.map((item) => (
+            <li key={item.label} className="mb-4">
+              <Link
+                to={item.path}
+                className="flex items-center text-lg px-6 py-2 rounded-md transition-colors duration-200 hover:bg-slate-700"
+              >
+                <span className="mr-3 text-xl">{item.icon}</span>
+                {item.label}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <button onClick={handleLogout}>logout</button>
+          </li>
+        </ul>
+      </nav>
+    </aside>
   );
-}
+};
+
+export default StudentSidebar;

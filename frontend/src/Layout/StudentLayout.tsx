@@ -11,10 +11,10 @@ const StudentLayout = () => {
   }
 
   return (
-    <>
+    <div className="flex">
       <StudentSidebar />
       <Outlet />
-    </>
+    </div>
   );
 };
 
