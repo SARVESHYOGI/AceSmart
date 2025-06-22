@@ -1,7 +1,8 @@
-import generate from "../config/aiprompt";
-
+import isEqual from "lodash.isequal";
 import { Request, Response } from 'express';
 import { Question } from "../models/Question.model";
+import { TestModel } from "../models/Test.model";
+// import generate  from "../config/aiprompt";
 
 
 
@@ -129,6 +130,7 @@ export const generateQuestions = async (req: Request, res: Response) => {
     }
 ];
 
+        addTestToDB(exam, subject, topic, result);
         addtoquestioncollection(exam,subject,topic,result);
 
         if (!result || result.length === 0) {
@@ -141,6 +143,52 @@ export const generateQuestions = async (req: Request, res: Response) => {
         return res.status(500).json({ message: 'Internal server error', error: error });
     }   
 }
+
+const addTestToDB = async (exam: string, subject: string, topic: string, questions: any[]) => {
+    try {
+        const existingTests = await TestModel.find({ examType: exam, subject, topic });
+
+    const isDuplicate = existingTests.some((test) => {
+      return isEqual(
+        test.questions.map(q => ({
+          question: q.question,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          explanation: q.explanation,
+        })),
+        questions.map(q => ({
+          question: q.question,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          explanation: q.explanation ?? "",
+        }))
+      );
+    });
+
+    if (isDuplicate) {
+      console.log(` Duplicate test already exists for ${exam} - ${subject} - ${topic}`);
+      return;
+    }
+
+    const test = {
+      examType: exam,
+      subject,
+      topic,
+      questions: questions.map(q => ({
+        question: q.question,
+        options: q.options,
+        correctAnswer: q.correctAnswer,
+        explanation: q.explanation ?? "",
+      })),
+        };
+    
+        await TestModel.create(test);
+        console.log(`Test for ${exam} in ${subject} on ${topic} added successfully.`);
+    } catch (error) {
+        console.error("Error adding test to the database:", error);
+    }
+}
+
 const addtoquestioncollection = async (
   exam: string,
   subject: string,

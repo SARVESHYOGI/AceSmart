@@ -4,10 +4,13 @@ import { IAnswer, TestAttemptModel } from "../models/Test.model";
 
 export const submitTest = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { examType, score, answers } = req.body as {
+    const { examType, score, answers, subject, topic } = req.body as {
+
       examType: string;
       score: number;
       answers: IAnswer[];
+      subject: string;
+      topic: string;
     };
 
     const studentId = req.user?.id;
@@ -29,6 +32,8 @@ export const submitTest = async (req: Request, res: Response): Promise<Response>
     const testAttempt = await TestAttemptModel.create({
       studentId: new Types.ObjectId(studentId),
       examType,
+      subject,
+      topic,
       score,
       answers: formattedAnswers,
     });
