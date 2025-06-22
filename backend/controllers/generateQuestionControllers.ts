@@ -2,6 +2,7 @@ import isEqual from "lodash.isequal";
 import { Request, Response } from 'express';
 import { Question } from "../models/Question.model";
 import { TestModel } from "../models/Test.model";
+import test from "node:test";
 // import generate  from "../config/aiprompt";
 
 
@@ -130,14 +131,17 @@ export const generateQuestions = async (req: Request, res: Response) => {
     }
 ];
 
-        addTestToDB(exam, subject, topic, result);
-        addtoquestioncollection(exam,subject,topic,result);
+        const testID=await addTestToDB(exam, subject, topic, result);
+        await addtoquestioncollection(exam,subject,topic,result);
 
         if (!result || result.length === 0) {
             return res.status(500).json({ message: 'No questions generated.' });
         }
-
-       return res.status(200).json(result);
+        const data={
+          testID: testID,
+          result: result
+        }
+       return res.status(200).json(data);
     } catch (error) {
         console.error('Error generating questions:', error);
         return res.status(500).json({ message: 'Internal server error', error: error });
@@ -182,8 +186,10 @@ const addTestToDB = async (exam: string, subject: string, topic: string, questio
       })),
         };
     
-        await TestModel.create(test);
+        const newtest = await TestModel.create(test);
+        console.log(test);
         console.log(`Test for ${exam} in ${subject} on ${topic} added successfully.`);
+        return (newtest._id as string).toString() ;
     } catch (error) {
         console.error("Error adding test to the database:", error);
     }
