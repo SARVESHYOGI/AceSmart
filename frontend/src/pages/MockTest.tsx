@@ -27,6 +27,11 @@ export type Inputs = {
   topic: string;
 };
 
+export type TestRes = {
+  result: MCQ[];
+  testID: string;
+};
+
 export default function MockTest() {
   const {
     register,
@@ -40,7 +45,7 @@ export default function MockTest() {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
     try {
-      const res = await generateMockTest(data);
+      const res = (await generateMockTest(data)) as TestRes;
       handleClose();
       console.log(res);
       setData(res);
@@ -55,8 +60,8 @@ export default function MockTest() {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [data, setData] = React.useState<MCQ[] | null>(null);
-
+  const [data, setData] = React.useState<TestRes | null>(null);
+  console.log(data);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -177,7 +182,7 @@ export default function MockTest() {
       {data && (
         <>
           <div>test generated</div>
-          <Link to="/test">
+          <Link to={`/test/${data.testID}`}>
             <Button>GO TO TEST</Button>
           </Link>
         </>

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { Types } from "mongoose";
-import { IAnswer, TestAttemptModel } from "../models/Test.model";
+import mongoose, { Types } from "mongoose";
+import { IAnswer, TestAttemptModel, TestModel } from "../models/Test.model";
 
 export const submitTest = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -68,3 +68,25 @@ export const getTestAttempts = async (req: Request, res: Response): Promise<Resp
     return res.status(500).json({ error: "An error occurred while fetching test attempts." });
   }
 }
+
+export const getTestById = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { id } = req.params;
+
+    if (!id||!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Test ID is required.' });
+    }
+
+    const findtest = await TestModel.findById(id);
+
+    if (!findtest) {
+      return res.status(404).json({ error: 'Test not found.' });
+    }
+
+    return res.status(200).json({ testQuestions: findtest });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'An error occurred while fetching the test.' });
+  }
+};
