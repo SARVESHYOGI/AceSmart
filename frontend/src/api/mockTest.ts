@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./axiosInstance";
 
 export const generateMockTest = async (data: { exam:string,subject: string,topic: string }) => {
@@ -45,3 +46,33 @@ export const fetchTestByID=async(id:string): Promise<Test|undefined>=>{
       console.log(error);
   }
 }
+
+interface IAnswer {
+  questionId: string;
+  selectedOption: string;
+  correct: boolean;
+}
+
+interface ISubmitTestAttemptParams {
+  examType: string;
+  subject: string;
+  topic: string;
+  score: number;
+  answers: IAnswer[];
+}
+
+export const submitTestAttempt = async (testData: ISubmitTestAttemptParams) => {
+  try {
+    const response = await api.post('/tests/submitTest', testData);
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.error || 
+        'Failed to submit test attempt. Please try again.'
+      );
+    }
+    throw new Error('An unexpected error occurred');
+  }
+};

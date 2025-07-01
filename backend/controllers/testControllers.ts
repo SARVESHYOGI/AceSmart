@@ -5,7 +5,6 @@ import { IAnswer, TestAttemptModel, TestModel } from "../models/Test.model";
 export const submitTest = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { examType, score, answers, subject, topic } = req.body as {
-
       examType: string;
       score: number;
       answers: IAnswer[];
@@ -21,6 +20,12 @@ export const submitTest = async (req: Request, res: Response): Promise<Response>
 
     if (!answers || answers.length === 0) {
       return res.status(400).json({ error: "No answers provided" });
+    }
+    if (!examType || !subject || !topic) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+      if (typeof score !== 'number') {
+      return res.status(400).json({ error: "Invalid score format" });
     }
 
     const formattedAnswers = answers.map((answer) => ({
@@ -44,8 +49,11 @@ export const submitTest = async (req: Request, res: Response): Promise<Response>
     });
 
   } catch (error) {
-    console.error("Error submitting test:", error);
-    return res.status(500).json({ error: "An error occurred while submitting the test." });
+   console.error("Error submitting test:", error);
+    return res.status(500).json({ 
+      error: "An error occurred while submitting the test.",
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 

@@ -11,6 +11,10 @@ import { generateMockTest } from "../api/mockTest";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Atom } from "react-loading-indicators";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store";
+import { setTestData } from "../store/testSlice";
 
 export type MCQOptionKey = "A" | "B" | "C" | "D";
 
@@ -41,6 +45,8 @@ export default function MockTest() {
   } = useForm<Inputs>();
 
   const allFields = watch();
+  const dispatch = useDispatch();
+  const data = useSelector((state: RootState) => state.test.currentTest);
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
@@ -48,7 +54,7 @@ export default function MockTest() {
       const res = (await generateMockTest(data)) as TestRes;
       handleClose();
       console.log(res);
-      setData(res);
+      dispatch(setTestData(res));
     } catch (error) {
       console.log(error);
     } finally {
@@ -60,7 +66,7 @@ export default function MockTest() {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [data, setData] = React.useState<TestRes | null>(null);
+  // const [data, setData] = React.useState<TestRes | null>(null);
   console.log(data);
   const handleClickOpen = () => {
     setOpen(true);
