@@ -10,6 +10,7 @@ import { fetchUser } from "./store/authSlice";
 import MockTest from "./pages/MockTest";
 import TestPage from "./pages/TestPage";
 import Register from "./pages/Register";
+import StudentProfile from "./pages/StudentProfile";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +24,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="/mocktest" element={<MockTest />} />
           <Route path="/test/:id" element={<TestPage />} />
+          <Route path="/profile" element={<StudentProfile />} />
           <Route path="*" element={<NoPage />} />
         </Route>
         <Route path="/login" element={<Login />} />
