@@ -11,9 +11,16 @@ const StudentLayout = () => {
   }
 
   return (
-    <div className="flex">
-      <StudentSidebar />
-      <Outlet />
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <div className="sticky top-0 self-start h-screen bg-green-200 shadow-lg">
+        <StudentSidebar />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto p-6">
+        <Outlet />
+      </div>
     </div>
   );
 };

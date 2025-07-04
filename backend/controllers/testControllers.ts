@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import mongoose, { Types } from "mongoose";
-import { IAnswer, TestAttemptModel, TestModel } from "../models/Test.model";
+import { IAnswer, ITestAttempt, TestAttemptModel, TestModel } from "../models/Test.model";
 
 export const submitTest = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -96,5 +96,25 @@ export const getTestById = async (req: Request, res: Response): Promise<Response
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'An error occurred while fetching the test.' });
+  }
+};
+
+export const studentgivenTests = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const studentId = req.user?.id;
+
+    if (!studentId) {
+      return res.status(401).json({ error: "Student not authenticated" });
+    }
+
+    const tests = await TestAttemptModel.find({ studentId: new Types.ObjectId(studentId) })
+      .sort({ createdAt: -1 });
+    
+      console.log(tests);
+
+    return res.status(200).json(tests);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Failed to get student given tests' });
   }
 };
