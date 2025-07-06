@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../store";
 import { login } from "../store/authSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
@@ -27,10 +28,18 @@ const Login: React.FC = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async ({ email, password }) => {
     try {
-      await dispatch(login({ email, password }));
-      navigate("/students");
+      const resultAction = await dispatch(login({ email, password }));
+      const user = unwrapResult(resultAction);
+
+      if (user.role === "student") {
+        navigate("/student");
+      } else if (user.role === "teacher") {
+        navigate("/teacher");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
-      console.log(error);
+      console.log("Login error:", error);
     }
   };
 

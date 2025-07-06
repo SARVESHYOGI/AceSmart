@@ -8,9 +8,9 @@ const sidebarItems = [
   { label: "MockTest", icon: "📚", path: "/mocktest" },
   { label: "Assignments", icon: "📝", path: "/assignments" },
   // { label: "Grades", icon: "📊", path: "/grades" },
-  { label: "Profile", icon: "👤", path: "/profile" },
+  { label: "Profile", icon: "👤", path: "/teacher/profile" },
 ];
-const StudentSidebar: React.FC = () => {
+const TeacherSidebar: React.FC = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -20,7 +20,7 @@ const StudentSidebar: React.FC = () => {
   return (
     <aside className="w-[220px] h-screen bg-slate-800 text-white p-6 flex flex-col box-border">
       <div className="text-2xl font-bold text-center mb-8 tracking-wide">
-        Student Portal
+        Teacher Portal
       </div>
       <nav>
         <ul className="list-none p-0 m-0">
@@ -44,4 +44,4 @@ const StudentSidebar: React.FC = () => {
   );
 };
 
-export default StudentSidebar;
+export default TeacherSidebar;

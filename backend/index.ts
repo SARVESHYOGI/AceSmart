@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoute);
 app.use("/api/tests", testRoute);
-app.use("/api/teacher/batch", teacherRoute);
+app.use("/api/teacher/", teacherRoute);
 app.use("/api/parent/child", parentRoute);
 app.use("/api/generatequestions", generateQuestionsRoute);
 

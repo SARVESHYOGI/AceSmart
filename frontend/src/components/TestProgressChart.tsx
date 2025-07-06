@@ -65,7 +65,11 @@ const TestProgressChart: React.FC<TestProgressChartProps> = ({ data }) => {
         : 0,
   }));
 
-  const CustomizedDot = (props: any) => {
+  const CustomizedDot = (props: {
+    cx: number;
+    cy: number;
+    payload: { score: number };
+  }) => {
     const { cx, cy, payload } = props;
     const score = payload.score;
 
@@ -84,7 +88,15 @@ const TestProgressChart: React.FC<TestProgressChartProps> = ({ data }) => {
     );
   };
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active: string;
+    payload: any;
+    label: string;
+  }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -103,7 +115,15 @@ const TestProgressChart: React.FC<TestProgressChartProps> = ({ data }) => {
     return null;
   };
 
-  const BarTooltip = ({ active, payload, label }: any) => {
+  const BarTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active: string;
+    payload: any;
+    label: string;
+  }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

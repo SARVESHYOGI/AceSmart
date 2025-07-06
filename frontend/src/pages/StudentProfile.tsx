@@ -3,7 +3,6 @@ import { type RootState } from "../store";
 import { useEffect, useState } from "react";
 import { fetchTests } from "../api/studentDetails";
 import GivenTestCard from "../components/GivenTestCard";
-import BarDiag from "../components/BarGraph";
 import TestProgressChart from "../components/TestProgressChart";
 
 interface IAnswer {
