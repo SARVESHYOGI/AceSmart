@@ -3,9 +3,17 @@ import { type RootState } from "../store";
 import { useEffect, useState } from "react";
 import { fetchstudent } from "../api/studentDetails";
 
+export interface Data {
+  _id: string;
+  name: string;
+  email: string;
+  parent: string[];
+  role: string;
+}
+
 export default function TeacherProfile() {
   const userDetail = useSelector((state: RootState) => state.auth.user);
-  const [data, setData] = useState();
+  const [data, setData] = useState<Data[]>();
   useEffect(() => {
     const fetchstd = async () => {
       const data = await fetchstudent();
@@ -63,6 +71,26 @@ export default function TeacherProfile() {
             </div>
             <p className="text-gray-600 text-lg">No user logged in</p>
           </div>
+        )}
+      </div>
+      <div>
+        {Array.isArray(data) && data.length > 0 ? (
+          <>
+            {data.map((student: Data) => (
+              <div
+                key={student._id}
+                className="bg-white rounded-lg shadow p-4 mb-4"
+              >
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {student.name}
+                </h2>
+                <p className="text-gray-600">ID: {student._id}</p>
+                <p className="text-gray-600">Email: {student.email}</p>
+              </div>
+            ))}
+          </>
+        ) : (
+          <p className="text-gray-500">No students found.</p>
         )}
       </div>
 
