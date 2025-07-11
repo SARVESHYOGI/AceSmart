@@ -5,7 +5,7 @@ import { logout } from "../store/authSlice";
 
 const sidebarItems = [
   // { label: "Dashboard", icon: "🏠", path: "/dashboard" },
-  { label: "MockTest", icon: "📚", path: "/mocktest" },
+  { label: "CreateTest", icon: "📚", path: "/mocktest" },
   { label: "Assignments", icon: "📝", path: "/assignments" },
   // { label: "Grades", icon: "📊", path: "/grades" },
   { label: "Profile", icon: "👤", path: "/teacher/profile" },
